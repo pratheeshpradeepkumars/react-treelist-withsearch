@@ -16,7 +16,6 @@ export default function App() {
     setSearch(searchValue);
   };
   const getSuggestionSlection = obj => {
-    console.log(obj.suggestion_key.suggestion);
     setSearch(obj.suggestion_key.suggestion);
   };
   useEffect(() => {

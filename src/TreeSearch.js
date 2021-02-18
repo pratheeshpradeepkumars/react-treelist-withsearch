@@ -66,6 +66,27 @@ class TreeSearch extends Component {
     this.setState({ showSuggestion: false });
   };
 
+  renderSuggestions = option => {
+    return (
+      <>
+        <li
+          key={option.suggestion_key.suggestion}
+          onClick={() => this.handleSuggestionSelected(option)}
+          className="ft-as-list-item"
+        >
+          {option.suggestion_key.suggestion}
+        </li>
+        {option.children && option.children.length > 0 && (
+          <ul className="ft-as-list-con">
+            {option.children.map(opt => {
+              return this.renderSuggestions(opt);
+            })}
+          </ul>
+        )}
+      </>
+    );
+  };
+
   render() {
     const { searchValue, showSuggestion, suggestions } = this.state;
     return (
@@ -80,15 +101,8 @@ class TreeSearch extends Component {
           suggestions.length > 0 &&
           searchValue !== "" && (
             <div className="auto-suggest-container">
-              <ul>
-                {suggestions.map(option => (
-                  <li
-                    key={option.suggestion_key.suggestion}
-                    onClick={() => this.handleSuggestionSelected(option)}
-                  >
-                    {option.suggestion_key.suggestion}
-                  </li>
-                ))}
+              <ul className="ft-as-list-con">
+                {suggestions.map(option => this.renderSuggestions(option))}
               </ul>
             </div>
           )}
