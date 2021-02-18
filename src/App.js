@@ -19,7 +19,7 @@ export default function App() {
     setSearch(obj.suggestion_key.suggestion);
   };
   useEffect(() => {
-    if (search !== "" && search.length > 2) {
+    if (search !== "" && search.length > 0) {
       getFakeData(search);
     } else {
       setOptions([]);
@@ -31,6 +31,8 @@ export default function App() {
       value={search}
       suggestions={options}
       onSuggestionSelected={getSuggestionSlection}
+      height={200}
+      placeholder={"-"}
     />
   );
 }

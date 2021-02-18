@@ -7,7 +7,8 @@ class TreeSearch extends Component {
     this.state = {
       showSuggestion: false,
       searchValue: this.props.value,
-      suggestions: []
+      suggestions: [],
+      cursor: 0
     };
     this.wrapperRef = createRef();
   }
@@ -66,6 +67,27 @@ class TreeSearch extends Component {
     this.setState({ showSuggestion: false });
   };
 
+  highlightSearch = (string, subString) => {
+    const substringRegx = new RegExp(subString, "ig");
+    return string.replaceAll(substringRegx, match => {
+      return match.toUpperCase();
+    });
+  };
+
+  escapeRegExp = (str = "") => str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  highlight = ({ search = "", children = "" }) => {
+    const patt = new RegExp(`(${this.escapeRegExp(search.trim())})`, "i");
+    const parts = String(children).split(patt);
+
+    if (search) {
+      return parts.map((part, index) =>
+        patt.test(part) ? <b key={index}>{part}</b> : part
+      );
+    } else {
+      return children;
+    }
+  };
+
   renderSuggestions = option => {
     return (
       <>
@@ -73,11 +95,14 @@ class TreeSearch extends Component {
           key={option.suggestion_key.suggestion}
           onClick={() => this.handleSuggestionSelected(option)}
           className="ft-as-list-item"
+          tabIndex="0"
         >
-          {option.suggestion_key.suggestion}
+          <this.highlight search={this.state.searchValue}>
+            {option.suggestion_key.suggestion}
+          </this.highlight>
         </li>
         {option.children && option.children.length > 0 && (
-          <ul className="ft-as-list-con">
+          <ul className="ft-as-list-con inner-ul">
             {option.children.map(opt => {
               return this.renderSuggestions(opt);
             })}
@@ -87,21 +112,43 @@ class TreeSearch extends Component {
     );
   };
 
+  handleKeyDown = e => {
+    const { cursor, suggestions } = this.state;
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) {
+      this.setState(prevState => ({
+        cursor: prevState.cursor - 1
+      }));
+    } else if (e.keyCode === 40 && cursor < suggestions.length - 1) {
+      console.log("Sugg : ", suggestions.length);
+      this.setState(prevState => ({
+        cursor: prevState.cursor + 1
+      }));
+    }
+  };
+
   render() {
     const { searchValue, showSuggestion, suggestions } = this.state;
+    const height = this.props.height;
+    console.log(this.state.cursor);
     return (
       <div className="ft-tree-search-container" ref={this.wrapperRef}>
         <input
           value={searchValue}
           onChange={this.handleSearch}
           onClick={this.handleSearchClick}
+          placeholder={this.props.placeholder || ""}
+          onKeyDown={this.handleKeyDown}
         />
         {showSuggestion &&
           suggestions &&
           suggestions.length > 0 &&
           searchValue !== "" && (
-            <div className="auto-suggest-container">
-              <ul className="ft-as-list-con">
+            <div
+              className="auto-suggest-container"
+              style={height ? { maxHeight: `${this.props.height}px` } : {}}
+            >
+              <ul className="ft-as-list-con outer-ul">
                 {suggestions.map(option => this.renderSuggestions(option))}
               </ul>
             </div>
