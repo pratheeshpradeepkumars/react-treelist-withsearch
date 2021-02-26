@@ -50,7 +50,7 @@ let model = [
 ];
 let counter = 0;
 export default function App() {
-  const [search, setSearch] = useState("sho");
+  const [search, setSearch] = useState("");
   const [options, setOptions] = useState([]);
   const getFakeData = searchValue => {
     fetch(
