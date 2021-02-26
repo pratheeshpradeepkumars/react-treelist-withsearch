@@ -22,7 +22,7 @@ class TreeSearch extends Component {
       console.log("DATA", this.props.suggestions);
       this.setState({ suggestions: this.props.suggestions }, () => {
         if (this.props.suggestions.length > 0) {
-          this.setState({ showSuggestion: true });
+          // this.setState({ showSuggestion: true });
         }
       });
     }
@@ -45,7 +45,7 @@ class TreeSearch extends Component {
   handleSearch = event => {
     const value = event.target.value;
     this.clearSuggestion(() => {
-      this.setState({ searchValue: value }, () => {
+      this.setState({ searchValue: value, showSuggestion: true }, () => {
         this.props.onSuggestionSearch(value);
       });
     });
@@ -120,7 +120,7 @@ class TreeSearch extends Component {
         cursor: prevState.cursor - 1
       }));
     } else if (e.keyCode === 40 && cursor < suggestions.length - 1) {
-      console.log("Sugg : ", suggestions.length);
+      //console.log("Sugg : ", suggestions.length);
       this.setState(prevState => ({
         cursor: prevState.cursor + 1
       }));
@@ -130,7 +130,7 @@ class TreeSearch extends Component {
   render() {
     const { searchValue, showSuggestion, suggestions } = this.state;
     const height = this.props.height;
-    console.log(this.state.cursor);
+    // console.log(this.state.cursor);
     return (
       <div className="ft-tree-search-container" ref={this.wrapperRef}>
         <input

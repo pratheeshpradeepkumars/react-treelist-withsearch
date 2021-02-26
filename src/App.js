@@ -2,15 +2,70 @@ import React, { useEffect, useState } from "react";
 import "./style.css";
 import TreeSearch from "./TreeSearch";
 
+let model = [
+  {
+    suggestion_key: {
+      suggestion: "fever" + Math.floor(Math.random() * 101),
+      description: ""
+    },
+    children: [
+      {
+        suggestion_key: {
+          suggestion: "fever" + Math.floor(Math.random() * 101),
+          description: ""
+        },
+        children: []
+      },
+      {
+        suggestion_key: {
+          suggestion: "fever" + Math.floor(Math.random() * 101),
+          description: ""
+        },
+        children: [
+          {
+            suggestion_key: {
+              suggestion: "newFever" + Math.floor(Math.random() * 101),
+              description: ""
+            },
+            children: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    suggestion_key: {
+      suggestion: "Cough" + Math.floor(Math.random() * 101),
+      description: ""
+    },
+    children: [
+      {
+        suggestion_key: {
+          suggestion: "Cough" + Math.floor(Math.random() * 101),
+          description: ""
+        }
+      }
+    ]
+  }
+];
+let counter = 0;
 export default function App() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("sho");
   const [options, setOptions] = useState([]);
   const getFakeData = searchValue => {
     fetch(
       "https://my-json-server.typicode.com/pratheeshpradeepkumars/mockjson/suggestions"
     )
       .then(response => response.json())
-      .then(data => setOptions(data));
+      .then(data => {
+        counter++;
+        if (counter % 2 === 0) {
+          setOptions(model);
+          console.log("Model", model);
+        } else {
+          setOptions(data);
+        }
+      });
   };
   const handleSearch = searchValue => {
     setSearch(searchValue);
